@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "version": "0.1.83",
+  "version": "0.1.84",
   "name": "nexus",
   "type": "module",
   "license": "MIT",
