@@ -56,7 +56,11 @@ cd "$SOURCE_DIR"
 # a lockfile-format or lockfile-resolution change.
 if ! bun install --frozen-lockfile; then
   say "Bun lockfile differs on this runtime; retrying without frozen mode"
-  bun install
+  if ! bun install; then
+    say "A native dependency build failed; retrying without lifecycle scripts"
+    bun install --ignore-scripts
+    printf '%s\n' '[NEXUS] Warning: native optional helpers were skipped; the core agent is installed.'
+  fi
 fi
 
 say "Installing the nexus command"
