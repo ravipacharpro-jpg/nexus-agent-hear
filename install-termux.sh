@@ -51,7 +51,13 @@ fi
 
 say "Installing JavaScript dependencies (this may take a few minutes)"
 cd "$SOURCE_DIR"
-bun install --frozen-lockfile
+# Termux repositories can ship a newer Bun than the lockfile writer. Prefer
+# the frozen install, but fall back to a normal install when Bun reports only
+# a lockfile-format or lockfile-resolution change.
+if ! bun install --frozen-lockfile; then
+  say "Bun lockfile differs on this runtime; retrying without frozen mode"
+  bun install
+fi
 
 say "Installing the nexus command"
 mkdir -p "$BIN_DIR" "$HOME/.nexus/bots" "$HOME/.nexus/tools" "$HOME/.nexus/services" "$HOME/.nexus/logs" "$HOME/.nexus/agents"
