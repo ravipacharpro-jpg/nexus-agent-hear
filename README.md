@@ -47,11 +47,17 @@
 ### Installation
 
 ```bash
-# Termux, Linux, and PC installer
-curl -fsSL https://raw.githubusercontent.com/itzgeniusboy/nexus-fixed/main/install.sh | bash
+# Termux source installer (native Android / no root)
+curl -fsSL https://raw.githubusercontent.com/ravipacharpro-jpg/nexus-agent-hear/main/install-termux.sh | bash
+
+# Termux: reload your shell, then start the agent
+source ~/.bashrc && nexus
+
+# Linux and PC installer
+curl -fsSL https://raw.githubusercontent.com/ravipacharpro-jpg/nexus-agent-hear/main/install.sh | bash
 
 # Pin the latest verified installer-compatible version
-curl -fsSL https://raw.githubusercontent.com/itzgeniusboy/nexus-fixed/main/install.sh | bash -s -- --version 0.1.67
+curl -fsSL https://raw.githubusercontent.com/ravipacharpro-jpg/nexus-agent-hear/main/install.sh | bash -s -- --version 0.1.67
 
 # Package managers
 npm i -g nexus-ai@latest        # or bun/pnpm/yarn
