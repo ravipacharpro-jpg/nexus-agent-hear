@@ -63,6 +63,24 @@ if ! bun install --frozen-lockfile; then
   fi
 fi
 
+# @ff-labs/fff-bun ships Linux/macOS/Windows binaries only. On Android its
+# package is skipped, so provide a safe no-op module rather than crashing at
+# startup; the agent remains usable without native fast file indexing.
+FFF_DIR="$SOURCE_DIR/node_modules/@ff-labs/fff-bun"
+if [ ! -e "$FFF_DIR/package.json" ]; then
+  say "Enabling Termux file-search fallback"
+  mkdir -p "$FFF_DIR"
+  cat > "$FFF_DIR/package.json" <<'JSON'
+{"name":"@ff-labs/fff-bun","version":"0.9.4","type":"module","main":"index.js"}
+JSON
+  cat > "$FFF_DIR/index.js" <<'JS'
+export const FileFinder = {
+  isAvailable() { return false },
+  create() { return { ok: false, error: "Native file indexing is unavailable on Android/Termux" } },
+}
+JS
+fi
+
 say "Installing the nexus command"
 mkdir -p "$BIN_DIR" "$HOME/.nexus/bots" "$HOME/.nexus/tools" "$HOME/.nexus/services" "$HOME/.nexus/logs" "$HOME/.nexus/agents"
 cat > "$BIN_DIR/nexus" <<'LAUNCHER'
