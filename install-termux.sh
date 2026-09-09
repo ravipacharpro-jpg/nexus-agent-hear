@@ -17,6 +17,18 @@ die() { printf '\n[NEXUS] ERROR: %s\n' "$*" >&2; exit 1; }
 [ -n "${PREFIX:-}" ] && [ -d "$PREFIX" ] && command -v pkg >/dev/null 2>&1 \
   || die "Run this installer inside the native Termux app."
 
+if ! apt-get --version >/dev/null 2>&1; then
+  arch="$(uname -m)"
+  case "$arch" in
+    aarch64|arm64) deb_arch="aarch64" ;;
+    armv7l|arm) deb_arch="arm" ;;
+    x86_64|amd64) deb_arch="x86_64" ;;
+    i686|x86) deb_arch="i686" ;;
+    *) deb_arch="$arch" ;;
+  esac
+  die "Termux pkg/apt is broken (often missing liblz4). Repair it first with: curl -LO https://packages.termux.dev/apt/termux-main/pool/main/libl/liblz4/liblz4_1.10.0-1_${deb_arch}.deb && dpkg -i liblz4_1.10.0-1_${deb_arch}.deb && pkg update -y"
+fi
+
 say "Updating Termux packages"
 pkg update -y
 pkg install -y bash ca-certificates curl git unzip tar nodejs-lts
